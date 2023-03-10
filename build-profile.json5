@@ -1,0 +1,40 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "material": {
+          "certpath": "C:\\Users\\Gah0\\.ohos\\config\\openharmony\\auto_ohos_default_musicplayer2_ohos.musicplayer.cer",
+          "storePassword": "0000001B1B855AF1081190257EAFC919172129BCEB4EDBB8C598CE18D42C047E3DAF3F6B99252FAF4117B9",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B3B99754AAA8340D0D923AF2B1FA2DBBDE70927569EDFE5FCE7D03CF1B8528A27132FC123984D53",
+          "profile": "C:\\Users\\Gah0\\.ohos\\config\\openharmony\\auto_ohos_default_musicplayer2_ohos.musicplayer.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\Gah0\\.ohos\\config\\openharmony\\auto_ohos_default_musicplayer2_ohos.musicplayer.p12"
+        }
+      }
+    ],
+    "compileSdkVersion": 9,
+    "compatibleSdkVersion": 9,
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

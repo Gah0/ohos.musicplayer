@@ -1,3 +1,6 @@
+import router from '@ohos.router'
+
+
 @Entry
 @Component
 struct Index {
@@ -20,6 +23,7 @@ struct Index {
         .width(48)
         .height(48)
         .onClick(() => {
+          router.pushUrl({ url: 'pages/Firstpage'})
         })
       Text(this.isPlaying ? ('没有播放') : ('正在播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))
@@ -71,7 +75,6 @@ struct Index {
 
   @Builder sildeindicator() {
     Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
-
       Slider({
         value: this.currentProgress,
         min: 0,
@@ -130,7 +133,6 @@ struct Index {
 
 
   build() {
-
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceBetween }) {
       Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.Start }) {
         //第一行控件，返回，文字，分布式

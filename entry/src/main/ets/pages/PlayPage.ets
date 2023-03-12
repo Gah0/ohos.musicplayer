@@ -53,24 +53,24 @@ struct Index {
 
   @Builder MusicShowPanel(){
     Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Center }) {
-        Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
-          .width(32)
-          .height(32)
-          .onClick(() => {
-          })
+      Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
+        .width(32)
+        .height(32)
+        .onClick(() => {
+        })
 
-        Flex({ direction: FlexDirection.Column,justifyContent: FlexAlign.Center}) {
-          Text('明日旅程').fontSize(32)
-          Text('author').fontSize(16)
-        }
+      Flex({ direction: FlexDirection.Column,justifyContent: FlexAlign.Center}) {
+        Text('明日旅程').fontSize(32)
+        Text('author').fontSize(16)
+      }
 
-        Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
-          .width(32)
-          .height(32)
-          .onClick(() => {
-          })
+      Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
+        .width(32)
+        .height(32)
+        .onClick(() => {
+        })
 
-      }.padding(24)
+    }.padding(24)
   }
 
   @Builder sildeindicator() {

@@ -1,6 +1,6 @@
 {
   "src": [
-    "pages/PlayPage",
+    "pages/Index",
     "pages/Firstpage"
   ]
 }

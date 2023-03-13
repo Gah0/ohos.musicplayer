@@ -1,6 +1,6 @@
 import router from '@ohos.router'
 import Logger from '../HiLog/Logger'
-
+import PM from '../Common/PM'
 const TAG: string = 'Index'
 
 @Entry
@@ -27,7 +27,7 @@ struct Index {
         .onClick(() => {
           router.pushUrl({ url: 'pages/Firstpage'})
         })
-      Text(this.isPlaying ? ('没有播放') : ('正在播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
+      Text(this.isPlaying ? ('正在播放') : ('没有播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))
         .width(38)
         .height(38)
@@ -117,12 +117,18 @@ struct Index {
       Image($r("app.media.privious")).width(48).height(48).onClick(() => {
         //this.onPreviousMusic()
       })
-      Image(this.isPlaying ? $r("app.media.play") : $r("app.media.pause"))
+      Image(this.isPlaying ? $r("app.media.pause") : $r("app.media.play"))
         .width(72)
         .height(72)
         .onClick(() => {
           Logger.info(TAG,`this.isplaying 3 = ${this.isPlaying}`)
-          //this.onPlayOrPauseMusic()
+/*          if (this.isPlaying) {
+            this.isPlaying = false
+          } else {
+            this.isPlaying = true
+
+          }*/
+          this.onPlayOrPauseMusic()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
         //this.onNextMusic()
@@ -133,7 +139,17 @@ struct Index {
     }.width('100%').height(150).padding(32)
   }
 
+  onPlayOrPauseMusic() {
+    Logger.info(TAG, `onPlayClick isPlaying= ${this.isPlaying}`)
+    if (this.isPlaying) {
+      //正在播放->停止
 
+
+    } else {
+      //停止->播放
+
+    }
+  }
 
   build() {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceBetween }) {

@@ -1,13 +1,14 @@
 import router from '@ohos.router'
 import Logger from '../HiLog/Logger'
 import PM from '../Common/PM'
+import Song from '../Common/PM'
 const TAG: string = 'Index'
 
 @Entry
 @Component
 struct Index {
+  @State isPlaying:Boolean =false
   @State turntableAngle: number = 0
-  @State isPlaying: boolean = false
   @State isLike: boolean = false
   @State isModexchange: boolean = false
   @State currentProgress: number = 0
@@ -27,7 +28,7 @@ struct Index {
         .onClick(() => {
           router.pushUrl({ url: 'pages/Firstpage'})
         })
-      Text(this.isPlaying ? ('正在播放') : ('没有播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
+      Text(PM.isPlaying ? ('正在播放') : ('没有播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))
         .width(38)
         .height(38)
@@ -62,7 +63,7 @@ struct Index {
           })
 
         Flex({ direction: FlexDirection.Column,justifyContent: FlexAlign.Center}) {
-          Text('明日旅程').fontSize(32)
+          Text('2315').fontSize(32)
           Text('author').fontSize(16)
         }
 
@@ -108,27 +109,20 @@ struct Index {
       Image(this.isModexchange ? $r("app.media.icon_music_exchangeplaymode") : $r("app.media.icon_music_mode1"))
         .width(22).height(22)
         .onClick(() => {
-          if (this.isModexchange) {
-            this.isModexchange = false
-          } else {
-            this.isModexchange = true
-          }
+            this.isModexchange != this.isModexchange;
         })
       Image($r("app.media.privious")).width(48).height(48).onClick(() => {
         //this.onPreviousMusic()
       })
-      Image(this.isPlaying ? $r("app.media.pause") : $r("app.media.play"))
+      Image(PM.isPlaying ? $r("app.media.pause") : $r("app.media.play") )
         .width(72)
         .height(72)
         .onClick(() => {
-          Logger.info(TAG,`this.isplaying 3 = ${this.isPlaying}`)
-/*          if (this.isPlaying) {
-            this.isPlaying = false
-          } else {
-            this.isPlaying = true
-
-          }*/
+          Logger.info(TAG,`onClick Index.isplaying = ${this.isPlaying}`)
+          Logger.info(TAG,`onPlayOrPauseMusic() begin`)
           this.onPlayOrPauseMusic()
+          this.isPlaying!=this.isPlaying;
+          Logger.info(TAG,`onPlayOrPauseMusic() end`)
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
         //this.onNextMusic()
@@ -140,14 +134,18 @@ struct Index {
   }
 
   onPlayOrPauseMusic() {
-    Logger.info(TAG, `onPlayClick isPlaying= ${this.isPlaying}`)
-    if (this.isPlaying) {
-      //正在播放->停止
-
-
-    } else {
-      //停止->播放
-
+    Logger.info(TAG, `onPlayClick isPlaying= ${PM.isPlaying}`)
+    if (PM.isPlaying) {
+      //正在播放->暂停
+      PM.pause()
+      Logger.info(TAG, `------pause end----= ${PM.isPlaying}`)
+    }else {
+      //finish->播放,PM.index=0
+      PM.preLoad(PM.index,()=>{
+        PM.play(-1)
+        this.isPlaying=PM.isPlaying;
+        Logger.info(TAG, `------play end----= ${PM.isPlaying}`)
+      })
     }
   }
 

@@ -1,5 +1,7 @@
 import router from '@ohos.router'
+import Logger from '../HiLog/Logger'
 
+const TAG: string = 'Index'
 
 @Entry
 @Component
@@ -119,6 +121,7 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
+          Logger.info(TAG,`this.isplaying 3 = ${this.isPlaying}`)
           //this.onPlayOrPauseMusic()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {

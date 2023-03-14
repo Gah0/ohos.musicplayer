@@ -7,12 +7,13 @@ const TAG: string = 'Index'
 @Component
 struct Index {
   @State turntableAngle: number = 0
-  @State isPlaying: boolean = false
   @State isLike: boolean = false
   @State isModexchange: boolean = false
   @State currentProgress: number = 0
   @State currentTimeText: string = '00:00'
   @State totalTimeText: string = '00:00'
+  @State imageArrays: Array<Resource> = [$r('app.media.pause')]
+  @State stringArrays: Array<string> = ['没有播放']
 
   @Builder headPanel(){
     Flex({
@@ -27,7 +28,7 @@ struct Index {
         .onClick(() => {
           router.pushUrl({ url: 'pages/Firstpage'})
         })
-      Text(this.isPlaying ? ('正在播放') : ('没有播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
+      Text(this.stringArrays[0]).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))
         .width(38)
         .height(38)
@@ -117,7 +118,7 @@ struct Index {
       Image($r("app.media.privious")).width(48).height(48).onClick(() => {
         //this.onPreviousMusic()
       })
-      Image(this.isPlaying ? $r("app.media.pause") : $r("app.media.play"))
+      Image(this.imageArrays[0])
         .width(72)
         .height(72)
         .onClick(() => {
@@ -144,6 +145,8 @@ struct Index {
     } else {
       PM.preload(PM.index, () => {
         PM.play(-1, true)
+        this.imageArrays[0] = $r('app.media.pause')
+        this.stringArrays[0]= ('正在播放')
       })
     }
   }

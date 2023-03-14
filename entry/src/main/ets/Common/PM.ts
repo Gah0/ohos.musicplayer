@@ -1,5 +1,6 @@
 import media from '@ohos.multimedia.media'
 import fileIo from '@ohos.fileio'
+import Logger from '../HiLog/Logger'
 
 const TAG: string = 'PlayerModel'
 

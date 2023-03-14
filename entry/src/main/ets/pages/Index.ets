@@ -122,12 +122,7 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
-          Logger.info(TAG,`onclick play= ${this.isPlaying}`)
-/*          if (this.isPlaying) {
-            this.isPlaying = false
-            } else {
-              this.isPlaying = true
-            }*/
+          Logger.info(TAG,`onclick play= ${PM.isPlaying}`)
           this.onPlayOrPauseMusic()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
@@ -140,8 +135,10 @@ struct Index {
   }
 
   onPlayOrPauseMusic() {
-    if (this.isPlaying) {
-      PM.pause(this.isPlaying)
+    if (PM.isPlaying) {
+      PM.pause(PM.isPlaying)
+      this.imageArrays[0] = $r('app.media.play')
+      this.stringArrays[0]= ('没有播放')
     } else {
       PM.preload(PM.index, () => {
         PM.play(-1, true)

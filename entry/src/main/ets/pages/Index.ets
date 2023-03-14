@@ -12,6 +12,8 @@ struct Index {
   @State currentProgress: number = 0
   @State currentTimeText: string = '00:00'
   @State totalTimeText: string = '00:00'
+  @State totalMs: number = 0
+
   @State imageArrays: Array<Resource> = [$r('app.media.pause')]
   @State stringArrays: Array<string> = ['没有播放']
 

@@ -34,6 +34,8 @@ class PlayerModel {
     public totalTimeMs: number = 0
     public index: number=0
     public anthor:string = 'name'
+    public playingProgressListener
+    public statusChangedListener
 
     //构造函数
     constructor() {
@@ -42,6 +44,14 @@ class PlayerModel {
         console.info(TAG, `createAudioPlayer end and initAudioPlayer`)
         this.initAudioPlayer()
         console.info(TAG, `createAudioPlayer= ${this.player}`)
+    }
+
+    setOnStatusChangedListener(callback) {
+        this.statusChangedListener = callback
+    }
+
+    setOnPlayingProgressListener(callback) {
+        this.playingProgressListener = callback
     }
 
     //初始化
@@ -63,6 +73,50 @@ class PlayerModel {
         console.info(TAG, 'initAudioPlayer end')
     }
 
+    getCurrentMs() {
+        return this.currentTimeMs
+    }
+
+    getDuration() {
+        Logger.info(TAG, `getDuration index= ${this.index}`)
+        if (this.playlist.audioFiles[this.index].duration > 0) {
+            return this.playlist.audioFiles[this.index].duration
+        }
+        Logger.info(TAG, `getDuration state= ${this.player.state}`)
+        this.playlist.audioFiles[this.index].duration = Math.min(this.player.duration, 97615)
+        Logger.info(TAG, `getDuration player.src= ${this.player.src} player.duration= ${this.playlist.audioFiles[this.index].duration} `)
+        return this.playlist.audioFiles[this.index].duration
+    }
+
+    restorePlayingStatus(status, callback) {
+        Logger.info(TAG, `restorePlayingStatus ${JSON.stringify(status)}`)
+        for (let i = 0; i < this.playlist.audioFiles.length; i++) {
+            if (this.playlist.audioFiles[i].fileUri === status.uri) {
+                Logger.info(TAG, `restore to index ${i}`)
+                this.preload(i, () => {
+                    this.play(status.seekTo, status.isPlaying)
+                    Logger.info(TAG, 'restore play status')
+                    callback(i)
+                })
+                return
+            }
+        }
+        Logger.info(TAG, 'restorePlayingStatus failed')
+        callback(-1)
+    }
+
+    getPlaylist(callback) {
+        // generate play list
+        Logger.info(TAG, 'generatePlayList')
+        Logger.info(TAG, 'getAudioAssets begin')
+        this.playlist = new PlayList()
+        this.playlist.audioFiles = []
+        this.playlist.audioFiles[0] = new Song('dynamic.wav','author', 'system/etc/dynamic.wav', 0)
+        this.playlist.audioFiles[1] = new Song('demo.wav','author', 'system/etc/demo.wav', 0)
+        callback()
+        Logger.info(TAG, 'getAudioAssets end')
+    }
+
     seek(ms) {
         this.currentTimeMs = ms
         if (this.isPlaying) {
@@ -74,8 +128,12 @@ class PlayerModel {
     }
 
     preload(index,callback){
+        Logger.info(TAG, `preLoad ${index}/${this.playlist.audioFiles.length}`)
+        if (index < 0 || index >= this.playlist.audioFiles.length) {
+            Logger.error(TAG, 'preLoad ignored')
+            return 0
+        }
         this.index = index
-        this.playlist.audioFiles[index] = new Song('dynamic.wav',this.anthor, 'system/etc/dynamic.wav', index)
         let uri = this.playlist.audioFiles[index].fileUri
         //declare function open(path: string, callback: AsyncCallback<number>): void;
         fileIO.open(uri, (err, fdNumber) => {

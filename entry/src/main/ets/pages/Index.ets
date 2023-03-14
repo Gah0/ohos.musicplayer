@@ -1,12 +1,16 @@
 import router from '@ohos.router'
 import Logger from '../HiLog/Logger'
-
+import {Music} from '../Common/PlayerManager'
 const TAG: string = 'Index'
 
 @Entry
 @Component
 struct Index {
+  //圆盘
+  private turntableTimer: number
   @State turntableAngle: number = 0
+  @State pointerAngle: number = 0
+
   @State isPlaying: boolean = false
   @State isLike: boolean = false
   @State isModexchange: boolean = false
@@ -38,10 +42,10 @@ struct Index {
   }
 
   @Builder DiscoPanel(){
-    Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceBetween}) {
+    Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceEvenly}) {
       Image($r("app.media.img_turntable"))
         .objectFit(ImageFit.Contain)
-        .aspectRatio(2.0)
+        .aspectRatio(1.4)
         .rotate({
           x: 0,
           y: 0,
@@ -133,7 +137,41 @@ struct Index {
     }.width('100%').height(150).padding(32)
   }
 
+  playAnimation() {
+    if (this.turntableTimer) {
+      return
+    }
+    let fun = () => {
+      animateTo({ duration: 1500, curve: Curve.Linear, playMode: PlayMode.Normal },
+        () => {
+          this.turntableAngle = this.turntableAngle + 90;
+        })
+    }
+    fun()
+    this.turntableTimer = setInterval(fun, 1600)
 
+    animateTo({ duration: 1500, curve: Curve.Linear, playMode: PlayMode.Normal },
+      () => {
+        this.pointerAngle = 39;
+      })
+  }
+
+  pauseAnimation() {
+    if (this.turntableTimer) {
+      clearInterval(this.turntableTimer)
+      this.turntableTimer = undefined
+    }
+  }
+
+  playEvent(music: Music) {
+    this.isPlaying = true
+    this.playAnimation()
+  }
+
+  pauseEvent(music: Music) {
+    this.isPlaying = false
+    this.pauseAnimation()
+  }
 
   build() {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceBetween }) {
@@ -143,7 +181,7 @@ struct Index {
         //第二层控件，圆盘+歌名+//歌曲信息，竖向歌词进度条（待做）
         Flex({direction: FlexDirection.Column}) {
           this.DiscoPanel()
-          this.MusicShowPanel()
+          //this.MusicShowPanel()
         }
         //底下面板
         Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.End }) {

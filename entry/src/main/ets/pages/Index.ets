@@ -16,6 +16,8 @@ struct Index {
 
   @State imageArrays: Array<Resource> = [$r('app.media.pause')]
   @State stringArrays: Array<string> = ['没有播放']
+  @State title: string = ''
+
 
   @Builder headPanel(){
     Flex({
@@ -146,6 +148,90 @@ struct Index {
         PM.play(-1, true)
         this.imageArrays[0] = $r('app.media.pause')
         this.stringArrays[0]= ('正在播放')
+      })
+    }
+  }
+
+  getShownTimer(ms) {
+    let minStr: string
+    let secStr: string
+    let seconds = Math.floor(ms / 1000)
+    let sec = seconds % 60
+    Logger.info(TAG, `getShownTimer sec = ${sec}`)
+    let min = (seconds - sec) / 60
+    Logger.info(TAG, `getShownTimer min = ${min}`)
+    if (sec < 10) {
+      secStr = '0' + sec
+    } else {
+      secStr = sec.toString(10)
+    }
+    if (min < 10) {
+      minStr = '0' + min
+    } else {
+      minStr = min.toString(10)
+    }
+    Logger.warn(TAG, `getShownTimer = ${minStr}:${secStr}`)
+    return minStr + ':' + secStr
+  }
+
+  aboutToAppear(){
+    this.currentTimeText = this.getShownTimer(0)
+    PM.setOnStatusChangedListener((isPlaying) => {
+      Logger.info(TAG, `on player status changed, isPlaying= ${PM.isPlaying} refresh ui`)
+      PM.setOnPlayingProgressListener((currentTimeMs) => {
+        this.currentTimeText = this.getShownTimer(currentTimeMs)
+        this.currentProgress = Math.floor(currentTimeMs / this.totalMs * 100)
+      })
+      if (PM.isPlaying) {
+        this.imageArrays[0] = $r('app.media.pause')
+      } else {
+        this.imageArrays[0] = $r('app.media.play')
+      }
+    })
+
+    PM.getPlaylist(() => {
+      Logger.info(TAG, 'on playlist generated, refresh ui')
+      this.restoreFromWant()
+    })
+  }
+
+  refreshSongInfo(index) {
+    Logger.info(TAG, `refreshSongInfo ${index}/${PM.playlist.audioFiles.length}`)
+    if (index >= PM.playlist.audioFiles.length) {
+      Logger.warn(TAG, 'refreshSongInfo ignored')
+      return
+    }
+    // update song title
+    this.title = PM.playlist.audioFiles[index].name
+
+    // update duration
+    this.totalMs = PM.getDuration()
+    this.totalTimeText = this.getShownTimer(this.totalMs)
+    this.currentTimeText = this.getShownTimer(PM.getCurrentMs())
+    Logger.info(TAG, `refreshSongInfo this.title= ${this.title}, this.totalMs= ${this.totalMs}, this.totalTimeText= ${this.totalTimeText},this.currentTimeText= ${this.currentTimeText}`)
+  }
+
+  restoreFromWant() {
+    Logger.info(TAG, 'restoreFromWant')
+    let status:any = AppStorage.Get('status')
+    //dead
+    if (status !== null && status.uri !== null) {
+      Logger.info(TAG, 'restorePlayingStatus')
+      PM.restorePlayingStatus(status, (index) => {
+        Logger.info(TAG, `restorePlayingStatus finished, index= ${index}`)
+        if (index >= 0) {
+          this.refreshSongInfo(index)
+        } else {
+          PM.preload(0, () => {
+            this.refreshSongInfo(0)
+          })
+        }
+        Logger.info(TAG, `Index PlayerModel.restorePlayingStatus this.totalMs = ${this.totalMs}, status.seekTo = ${status.seekTo}`)
+        this.currentProgress = Math.floor(status.seekTo / this.totalMs * 100)
+      })
+    } else {status.
+      PM.preload(0, () => {
+        this.refreshSongInfo(0)
       })
     }
   }

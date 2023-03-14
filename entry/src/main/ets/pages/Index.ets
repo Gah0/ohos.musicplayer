@@ -121,13 +121,12 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
-          Logger.info(TAG,`this.isplaying 3 = ${this.isPlaying}`)
+          Logger.info(TAG,`onclick play= ${this.isPlaying}`)
 /*          if (this.isPlaying) {
             this.isPlaying = false
-          } else {
-            this.isPlaying = true
-
-          }*/
+            } else {
+              this.isPlaying = true
+            }*/
           this.onPlayOrPauseMusic()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
@@ -140,14 +139,12 @@ struct Index {
   }
 
   onPlayOrPauseMusic() {
-    Logger.info(TAG, `onPlayClick isPlaying= ${this.isPlaying}`)
     if (this.isPlaying) {
-      //正在播放->停止
-
-
+      PM.pause(this.isPlaying)
     } else {
-      //停止->播放
-
+      PM.preload(PM.index, () => {
+        PM.play(-1, true)
+      })
     }
   }
 

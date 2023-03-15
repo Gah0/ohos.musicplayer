@@ -1,17 +1,20 @@
 import router from '@ohos.router'
 import Logger from '../HiLog/Logger'
-import {Music} from '../Common/PlayerManager'
+import {PlayerModel} from '../Common/PlayerModel'
+import {Music} from '../datamodel/Music'
+
+
 const TAG: string = 'Index'
 
 @Entry
 @Component
 struct Index {
+  private PlayerModel: PlayerModel = new PlayerModel()
   //圆盘
   private turntableTimer: number
   @State turntableAngle: number = 0
   @State pointerAngle: number = 0
 
-  @State isPlaying: boolean = false
   @State isLike: boolean = false
   @State isModexchange: boolean = false
   @State currentProgress: number = 0
@@ -31,7 +34,7 @@ struct Index {
         .onClick(() => {
           router.pushUrl({ url: 'pages/Firstpage'})
         })
-      Text(this.isPlaying ? ('没有播放') : ('正在播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
+      Text(this.PlayerModel.isPlaying ? ('没有播放') : ('正在播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))
         .width(38)
         .height(38)
@@ -121,11 +124,11 @@ struct Index {
       Image($r("app.media.privious")).width(48).height(48).onClick(() => {
         //this.onPreviousMusic()
       })
-      Image(this.isPlaying ? $r("app.media.play") : $r("app.media.pause"))
+      Image(this.PlayerModel.isPlaying ? $r("app.media.play") : $r("app.media.pause"))
         .width(72)
         .height(72)
         .onClick(() => {
-          Logger.info(TAG,`this.isplaying 3 = ${this.isPlaying}`)
+          Logger.info(TAG,`按了一下 => show PlayerModel.isPlaying =${this.PlayerModel.isPlaying}`)
           //this.onPlayOrPauseMusic()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
@@ -163,14 +166,18 @@ struct Index {
     }
   }
 
-  playEvent(music: Music) {
-    this.isPlaying = true
+  playEvent(/*music: PlayerModel.Music*/) {
+    this.PlayerModel.isPlaying= true
     this.playAnimation()
   }
 
-  pauseEvent(music: Music) {
-    this.isPlaying = false
+  pauseEvent(/*music: Music.Music*/) {
+    this.PlayerModel.isPlaying = false
     this.pauseAnimation()
+  }
+
+  aboutToAppear():void{
+    this.PlayerModel.init()
   }
 
   build() {

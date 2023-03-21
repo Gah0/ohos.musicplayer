@@ -8,7 +8,7 @@ const TAG:string = 'Index: '
 @Entry
 @Component
 struct Index {
-  @State isPlaying: boolean = false
+  @State isPlaying: boolean = true
   @State isLike: boolean = false
   @State isModexchange: boolean = false
 
@@ -128,9 +128,9 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
+          this.isPlaying=!this.isPlaying;
           log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
           this.av.play()
-          this.isPlaying=!this.isPlaying;
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
         //this.onNextMusic()

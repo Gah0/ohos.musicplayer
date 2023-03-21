@@ -9,7 +9,7 @@ export class AudioDemo {
   // 注册avplayer回调函数
   setAVPlayerCallback() {
     // 状态机变化回调函数
-    this.avPlayer.on('stateChange', async (state, reason) => {
+    this.avPlayer.on('stateChange', async (state) => {
       switch (state) {
         case 'idle': // 成功调用reset接口后触发该状态机上报
           log.info(TAG + 'state idle called')
@@ -53,17 +53,19 @@ export class AudioDemo {
       }
     })
   }
-  preload
-
-  async play() {
-    this.avPlayer = await media.createAVPlayer(); // 创建一个音频播放实例
-    log.info(TAG + 'create success')
-    this.setAVPlayerCallback()
+  async preload(){
     let fdPath = 'fd://'
     let pathDir = "/system/etc"
     let path = pathDir  + '/demo.wav'
     let file = await fs.open(path);
     fdPath = fdPath + '' + file.fd;
     this.avPlayer.url = fdPath;
+  }
+
+  async play() {
+    this.avPlayer = await media.createAVPlayer(); // 创建一个音频播放实例
+    log.info(TAG + 'create success')
+    this.setAVPlayerCallback()
+    this.preload()
   }
 }

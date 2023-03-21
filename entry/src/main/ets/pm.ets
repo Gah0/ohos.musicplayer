@@ -5,6 +5,16 @@ const TAG:string = 'PM '
 
 export class AudioDemo {
   private avPlayer
+
+  constructor(){
+    this.init(this);
+  }
+
+  async init(callback){
+    this.avPlayer = await media.createAVPlayer(); // 创建一个音频播放实例
+    log.info(TAG + 'create success')
+  }
+
   // 设置播放器回调函数
   // 注册avplayer回调函数
   setAVPlayerCallback() {
@@ -53,6 +63,7 @@ export class AudioDemo {
       }
     })
   }
+
   async preload(){
     let fdPath = 'fd://'
     let pathDir = "/system/etc"
@@ -63,8 +74,6 @@ export class AudioDemo {
   }
 
   async play() {
-    this.avPlayer = await media.createAVPlayer(); // 创建一个音频播放实例
-    log.info(TAG + 'create success')
     this.setAVPlayerCallback()
     this.preload()
   }

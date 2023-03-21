@@ -12,7 +12,8 @@ export class AudioDemo {
 
   async init(callback){
     this.avPlayer = await media.createAVPlayer(); // 创建一个音频播放实例
-    log.info(TAG + 'create success')
+    log.info(TAG + 'createAVPlayer() success')
+    log.info(TAG + `after init now state=${this.avPlayer.state}`)
   }
 
   // 设置播放器回调函数

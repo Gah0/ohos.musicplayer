@@ -1,7 +1,7 @@
 import media from '@ohos.multimedia.media'
 import fs from '@ohos.file.fs'
 import log from "../log"
-//import {AudioDemo} from "../pm"
+import {AudioDemo} from "../pm"
 import router from '@ohos.router'
 
 const TAG:string = 'Index: '
@@ -20,7 +20,7 @@ struct Index {
 
   @State message: string = 'Hello World'
 
-  //private av:AudioDemo=new AudioDemo()
+  private av:AudioDemo=new AudioDemo()
 
   @Builder HeadPanel(){
     Flex({
@@ -129,7 +129,7 @@ struct Index {
         .height(72)
         .onClick(() => {
           log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
-          //this.av.play()
+          this.av.play()
           this.isPlaying=!this.isPlaying;
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {

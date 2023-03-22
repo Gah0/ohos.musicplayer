@@ -130,7 +130,7 @@ struct Index {
         .onClick(() => {
           this.isPlaying=!this.isPlaying;
           log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
-          this.av.play()
+          this.av.playing(this)
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
         //this.onNextMusic()

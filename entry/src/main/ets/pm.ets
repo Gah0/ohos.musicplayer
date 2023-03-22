@@ -12,8 +12,14 @@ export class AudioDemo {
 
   async init(callback){
     this.avPlayer = await media.createAVPlayer(); // 创建一个音频播放实例
-    log.info(TAG + 'createAVPlayer() success')
-    log.info(TAG + `after init now state=${this.avPlayer.state}`)
+    if(this.avPlayer==null){
+      this.avPlayer.reset()
+      callback()
+    }else if(this.avPlayer.state==='idle') {
+      log.info(TAG + `createAVPlayer() success, after init now state=${this.avPlayer.state}`)
+    }else{
+      return;
+    }
   }
 
   // 设置播放器回调函数
@@ -28,15 +34,10 @@ export class AudioDemo {
         case 'initialized': // avplayer 设置播放源后触发该状态上报
           log.info(TAG + 'state initialized called ')
           //this.avPlayer.surfaceId = this.surfaceID // 设置显示画面，当播放的资源为纯音频时无需设置
-          this.avPlayer.prepare().then(() => {
-            log.info(TAG+ 'prepare success');
-          }, (err) => {
-            log.error(TAG + 'prepare filed,error message is :' + err.message)
-          })
           break;
         case 'prepared': // prepare调用成功后上报该状态机
           log.info(TAG + 'state prepared called')
-          this.avPlayer.play() // 调用播放接口开始播放
+          //this.avPlayer.play() // 调用播放接口开始播放
           break;
         case 'playing': // play成功调用后触发该状态机上报
           log.info(TAG + 'state playing called')
@@ -65,7 +66,7 @@ export class AudioDemo {
     })
   }
 
-  async preload(){
+  async preinitialized(){
     let fdPath = 'fd://'
     let pathDir = "/system/etc"
     let path = pathDir  + '/demo.wav'
@@ -74,8 +75,17 @@ export class AudioDemo {
     this.avPlayer.url = fdPath;
   }
 
-  async play() {
-    this.setAVPlayerCallback()
-    this.preload()
+  async playing(callback) {
+    //this.setAVPlayerCallback()
+    //1.
+    await this.preinitialized();
+    if(this.avPlayer.state == 'playing'){
+      return
+    }
+    //2.
+    await this.avPlayer.prepare();
+    log.info(TAG+ 'prepare success');
+    await this.avPlayer.play();
+    log.info(TAG+ `play success, on [${this.avPlayer.state}]`);
   }
 }

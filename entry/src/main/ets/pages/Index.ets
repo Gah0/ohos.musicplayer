@@ -10,8 +10,7 @@ const TAG:string = 'Index: '
 struct Index {
   @State isPlaying: boolean = true
   @State isLike: boolean = false
-  @State isModexchange: boolean = false
-
+  @State isLoop: boolean = false
   @State turntableAngle: number = 0
   @State currentProgress: number = 0
 
@@ -112,14 +111,10 @@ struct Index {
 
   @Builder PlayPanel() {
     Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceBetween }) {
-      Image(this.isModexchange ? $r("app.media.icon_music_exchangeplaymode") : $r("app.media.icon_music_mode1"))
+      Image(this.isLoop ? $r("app.media.icon_music_sequence") : $r("app.media.icon_music_mode1"))
         .width(22).height(22)
         .onClick(() => {
-          if (this.isModexchange) {
-            this.isModexchange = false
-          } else {
-            this.isModexchange = true
-          }
+            this.isLoop =! this.isLoop;
         })
       Image($r("app.media.privious")).width(48).height(48).onClick(() => {
         //this.onPreviousMusic()

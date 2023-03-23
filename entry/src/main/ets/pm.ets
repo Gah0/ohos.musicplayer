@@ -7,6 +7,8 @@ export class AudioDemo {
   private avPlayer
   public totalTimeMs: number = 0
   public currentTimeMs:number = 0
+  public stoppedsignal:Boolean=false
+  public pausedsignal:Boolean=false
 
   constructor(){
     this.init(this);
@@ -39,20 +41,26 @@ export class AudioDemo {
         case 'prepared': // prepare调用成功后上报该状态机
           log.info(TAG + 'state prepared called')
           //this.avPlayer.play() // 调用播放接口开始播放
+          this.pausedsignal=false
           break;
         case 'playing': // play成功调用后触发该状态机上报
           log.info(TAG + 'state playing called')
           break;
         case 'paused': // pause成功调用后触发该状态机上报
           log.info(TAG + 'state paused called')
+          this.pausedsignal=!this.pausedsignal;
           break;
         case 'completed': // 播放结束后触发该状态机上报
           log.info(TAG + 'state completed called')
           this.avPlayer.stop() //调用播放结束接口
+          this.stoppedsignal=!this.stoppedsignal;//stoppedsignal=true
+          log.info(TAG + `stoppedsignal = [${this.stoppedsignal}]`)
           break;
         case 'stopped': // stop接口成功调用后触发该状态机上报
           log.info(TAG + 'state stopped called')
           this.avPlayer.release() // 调用reset接口初始化avplayer状态
+          this.stoppedsignal=!this.stoppedsignal; //stoppedsignal=false
+          log.info(TAG + `stoppedsignal = [${this.stoppedsignal}]`)
           break;
         case 'released':
           log.info(TAG + 'state released called')
@@ -101,6 +109,8 @@ export class AudioDemo {
       })
     })
     await this.avPlayer.play()
+    this.totalTimeMs=this.avPlayer.duration;
+    log.info(`now the totaltime is ${this.totalTimeMs}`)
   }
 
   async pauseing(seekTo){
@@ -108,4 +118,10 @@ export class AudioDemo {
     this.avPlayer.seek(seekTo)
     log.info(`pause success, now state = [${this.avPlayer.state}]`)
   }
+
+  async seek(seekToMs){
+      await this.avPlayer.seek(seekToMs);
+      log.info(TAG + `已经设置进度条到[${seekToMs}]`)
+  }
+
 }

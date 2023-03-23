@@ -126,14 +126,7 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
-          this.isPlaying=!this.isPlaying;
-          log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
-          if(this.isPlaying){
-            this.av.playing(-1,this)
-          }else{
-            let seekTo=5000;
-            this.av.pauseing(seekTo);
-          }
+            this.PlayorPause()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
         //this.onNextMusic()
@@ -142,6 +135,19 @@ struct Index {
         //this.onShowMusicList()
       })
     }.width('100%').height(150).padding(32)
+  }
+
+  PlayorPause(){
+    this.isPlaying=!this.isPlaying;
+    log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
+    if(this.isPlaying&&this.av.stoppedsignal==false&&this.av.pausedsignal==false){
+      this.av.playing(-1,this)
+      this.TotalTime=this.av.totalTimeMs;
+      log.info(TAG+`${this.TotalTime}`)
+    }else{
+      let seekTo=-1
+      this.av.pauseing(seekTo);
+    }
   }
 
   build() {

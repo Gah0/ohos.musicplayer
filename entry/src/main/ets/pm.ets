@@ -92,6 +92,16 @@ export class AudioDemo {
   async playing(seekTo,callback) {
     await this.preinitialized()
     await this.avPlayer.prepare()
+    this.avPlayer.on('prepared',()=> {
+      if (seekTo > this.avPlayer.duration) {
+        seekTo = -1
+      }
+      this.avPlayer.on('playing', () => {
+        if (seekTo > 0) {
+          this.avPlayer.seek(seekTo)
+        }
+      })
+    })
     await this.avPlayer.play()
   }
 

@@ -24,6 +24,35 @@ struct Index {
 
   private av:AudioDemo=new AudioDemo()
 
+  onChangeMusicIndicator(value:number){
+    this.currTime = value
+    log.info(TAG+`[${this.currTime}]`)
+    if (this.totalTimeText != '00:00') {
+      let seekTo = this.currTime / 100 * this.av.totalTimeMs
+      log.info(TAG+`[${seekTo}]`)
+      this.currentTimeText = this.Ms2TimeText(seekTo)
+      this.av.seek(seekTo)
+    } else {
+      this.currentProgress = 0
+    }
+  }
+
+  Ms2TimeText(ms) {
+    let seconds = Math.floor(ms / 1000);
+    let sec = seconds % 60;
+    let min = (seconds - sec) / 60;
+
+    let secString = sec.toString()
+    let minString = min.toString()
+    if (sec < 10) {
+      secString = '0' + sec;
+    }
+    if (min < 10) {
+      minString = '0' + min;
+    }
+    return minString + ':' + secString;
+  }
+
   @Builder HeadPanel(){
     Flex({
       direction: FlexDirection.Row,

@@ -12,13 +12,12 @@ export class AudioDemo {
 
   async init(callback){
     this.avPlayer = await media.createAVPlayer(); // 创建一个音频播放实例
+    await this.setAVPlayerCallback();
     if(this.avPlayer==null){
-      this.avPlayer.reset()
-      callback()
-    }else if(this.avPlayer.state==='idle') {
-      log.info(TAG + `createAVPlayer() success, after init now state=${this.avPlayer.state}`)
+      this.avPlayer.reset();
+      callback();
     }else{
-      return;
+      log.info(TAG + `createAVPlayer() success, after init now state=${this.avPlayer.state}`)
     }
   }
 
@@ -75,17 +74,15 @@ export class AudioDemo {
     this.avPlayer.url = fdPath;
   }
 
-  async playing(callback) {
-    //this.setAVPlayerCallback()
-    //1.
-    await this.preinitialized();
-    if(this.avPlayer.state == 'playing'){
-      return
-    }
-    //2.
-    await this.avPlayer.prepare();
-    log.info(TAG+ 'prepare success');
-    await this.avPlayer.play();
-    log.info(TAG+ `play success, on [${this.avPlayer.state}]`);
+  async playing(seekTo,callback) {
+    await this.preinitialized()
+    await this.avPlayer.prepare()
+    await this.avPlayer.play()
+  }
+
+  async pauseing(seekTo){
+    await this.avPlayer.pause();
+    this.avPlayer.seek(seekTo)
+    log.info(`pause success, now state = [${this.avPlayer.state}]`)
   }
 }

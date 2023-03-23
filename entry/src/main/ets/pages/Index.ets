@@ -8,7 +8,7 @@ const TAG:string = 'Index: '
 @Entry
 @Component
 struct Index {
-  @State isPlaying: boolean = true
+  @State isPlaying: boolean = false
   @State isLike: boolean = false
   @State isLoop: boolean = false
   @State turntableAngle: number = 0
@@ -32,9 +32,9 @@ struct Index {
         .width(48)
         .height(48)
         .onClick(() => {
-          router.pushUrl({ url: 'pages/Firstpage'})
+          //router.pushUrl({ url: 'pages/Firstpage'})
         })
-      Text(this.isPlaying ? ('没有播放') : ('正在播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
+      Text(this.isPlaying ? ('正在播放') : ('没有播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))
         .width(38)
         .height(38)
@@ -119,13 +119,18 @@ struct Index {
       Image($r("app.media.privious")).width(48).height(48).onClick(() => {
         //this.onPreviousMusic()
       })
-      Image(this.isPlaying ? $r("app.media.play") : $r("app.media.pause"))
+      Image(this.isPlaying ? $r("app.media.pause") : $r("app.media.play"))
         .width(72)
         .height(72)
         .onClick(() => {
           this.isPlaying=!this.isPlaying;
           log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
-          this.av.playing(this)
+          if(this.isPlaying){
+            this.av.playing(-1,this)
+          }else{
+            let seekTo=5000;
+            this.av.pauseing(seekTo);
+          }
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
         //this.onNextMusic()

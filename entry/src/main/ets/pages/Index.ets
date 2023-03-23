@@ -15,6 +15,8 @@ struct Index {
   @State turntableAngle: number = 0
   @State currentProgress: number = 0
 
+  @State currTime: number = 0
+  @State TotalTime: number = 0
   @State currentTimeText: string = '00:00'
   @State totalTimeText: string = '00:00'
 
@@ -85,7 +87,7 @@ struct Index {
   @Builder Indicator() {
     Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
       Slider({
-        //value: this.currentProgress,
+        value: this.av.currentTimeMs,
         min: 0,
         max: 100,
         step: 1,
@@ -99,7 +101,7 @@ struct Index {
         .margin({ left: 24, right: 24 })
         .onChange((value: number, mode: SliderChangeMode) => {
           if (mode == 2) {
-            //this.onChangeMusicIndicator(value)
+            this.onChangeMusicIndicator(value)
           }
         })
     }.width('100%').height(18)

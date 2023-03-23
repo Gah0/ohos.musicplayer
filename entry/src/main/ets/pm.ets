@@ -5,7 +5,7 @@ const TAG:string = 'PM '
 
 export class AudioDemo {
   private avPlayer
-  private totalTimeMs: number = 0
+  public totalTimeMs: number = 0
   public currentTimeMs:number = 0
 
   constructor(){
@@ -66,10 +66,8 @@ export class AudioDemo {
       }
     })
     this.avPlayer.on('timeUpdate', (time:number) => {
-      log.info(TAG + 'timeUpdate success,and new time is :' + time)
+      //log.info(TAG + 'timeUpdate success,and new time is :' + time)
       this.currentTimeMs = time;
-      this.totalTimeMs = this.avPlayer.duration;
-      log.info(TAG+`[${this.avPlayer.duration}]`)
     })
     this.avPlayer.on('seekDone', (seekDoneTime:number) => {
       log.info(TAG + 'seekDone success,and seek time is:' + seekDoneTime)

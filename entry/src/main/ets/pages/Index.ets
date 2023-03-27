@@ -1,8 +1,8 @@
 import media from '@ohos.multimedia.media'
 import fs from '@ohos.file.fs'
 import log from "../log"
-import {AudioDemo} from "../pm"
-import router from '@ohos.router'
+import {AudioDemo,Music} from "../pm"
+import router from '@ohos.router';
 
 const TAG:string = 'Index: '
 @Entry

@@ -20,8 +20,7 @@ struct Index {
   @State currentTimeText: string = '00:00'
   @State totalTimeText: string = '00:00'
 
-  @State message: string = 'Hello World'
-
+  private currentMusic: Music = new Music()
   private av:AudioDemo=new AudioDemo()
 
   @Builder HeadPanel(){

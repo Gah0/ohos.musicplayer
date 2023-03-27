@@ -138,13 +138,15 @@ struct Index {
   }
 
   PlayorPause(){
-    if(this.isPlaying && this.av.stoppedsignal==false || this.av.pausedsignal==false){
+    log.info(TAG + `1按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
+    if(this.isPlaying==true && (this.av.stoppedsignal==false && this.av.pausedsignal==false)){
       let seekTo=-1
       this.av.pauseing(seekTo);
     }else{
       this.av.playing(-1,this)
     }
     this.isPlaying=!this.isPlaying;
+    log.info(TAG + `2按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
   }
 /*
   ProgressEvent(currentTimeMs: number, totalTimeMs: number) {

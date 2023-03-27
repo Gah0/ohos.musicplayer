@@ -87,22 +87,20 @@ struct Index {
   @Builder Indicator() {
     Flex({ direction: FlexDirection.Row, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
       Slider({
-        value: this.av.currentTimeMs,
+        value: this.AcurrProgress,
         min: 0,
         max: 100,
         step: 1,
-        style: SliderStyle.OutSet
+        style: SliderStyle.InSet
       })
-        .blockColor(Color.Blue)
-        .trackColor(Color.Gray)
-        .selectedColor(Color.Black)
-        .showSteps(true)
+        .blockColor('#191970')
+        .trackColor('#ADD8E6')
+        .selectedColor('#4169E1')
+        .showSteps(false)
         .flexGrow(1)
         .margin({ left: 24, right: 24 })
         .onChange((value: number, mode: SliderChangeMode) => {
-          if (mode == 2) {
-            this.onChangeMusicIndicator(value)
-          }
+            //this.onChangeMusicIndicator(value)
         })
     }.width('100%').height(18)
 

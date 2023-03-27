@@ -126,6 +126,8 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
+            this.isPlaying=!this.isPlaying;
+            log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
             this.PlayorPause()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
@@ -138,18 +140,25 @@ struct Index {
   }
 
   PlayorPause(){
-    this.isPlaying=!this.isPlaying;
-    log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
-    if(this.isPlaying&&this.av.stoppedsignal==false&&this.av.pausedsignal==false){
+    if(this.isPlaying==true && this.av.stoppedsignal==false || this.av.pausedsignal==false){
       this.av.playing(-1,this)
-      this.TotalTime=this.av.totalTimeMs;
-      log.info(TAG+`${this.TotalTime}`)
     }else{
       let seekTo=-1
       this.av.pauseing(seekTo);
     }
   }
-
+/*
+  ProgressEvent(currentTimeMs: number, totalTimeMs: number) {
+    //刷新currentTimeText
+    this.currentTimeText = this.ms2TimeText(currentTimeMs)
+    //获得音频时间条滑动系数
+    this.AcurrProgress = Math.floor(currentTimeMs / totalTimeMs * 100)
+    //渲染totaltimetext
+    if (this.totalTimeText == '00:00') {
+      this.totalTimeText = this.ms2TimeText(totalTimeMs)
+    }
+  }
+*/
   build() {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceBetween }) {
       Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.Start }) {

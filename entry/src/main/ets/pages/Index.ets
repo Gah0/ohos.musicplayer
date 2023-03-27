@@ -126,7 +126,7 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
-            this.isPlaying=!this.isPlaying;
+
             log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
             this.PlayorPause()
         })
@@ -140,12 +140,13 @@ struct Index {
   }
 
   PlayorPause(){
-    if(this.isPlaying==true && this.av.stoppedsignal==false || this.av.pausedsignal==false){
-      this.av.playing(-1,this)
-    }else{
+    if(this.isPlaying && this.av.stoppedsignal==false || this.av.pausedsignal==false){
       let seekTo=-1
       this.av.pauseing(seekTo);
+    }else{
+      this.av.playing(-1,this)
     }
+    this.isPlaying=!this.isPlaying;
   }
 /*
   ProgressEvent(currentTimeMs: number, totalTimeMs: number) {

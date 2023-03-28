@@ -22,7 +22,6 @@ export class AudioDemo {
   public stoppedsignal:Boolean=false
   public pausedsignal:Boolean=false
 
-  // 进度条定时器
   private progressIntervalID: number = 0
   private playerEvent: IPlayerEvent
   private currentMusic: Music = new Music()
@@ -69,6 +68,7 @@ export class AudioDemo {
           break;
         case 'initialized': // avplayer 设置播放源后触发该状态上报
           log.info(TAG + 'state initialized called ')
+          await this.prepared();
           //this.avPlayer.surfaceId = this.surfaceID // 设置显示画面，当播放的资源为纯音频时无需设置
           break;
         case 'prepared': // prepare调用成功后上报该状态机
@@ -96,6 +96,7 @@ export class AudioDemo {
           this.avPlayer.release() // 调用reset接口初始化avplayer状态
           this.stoppedsignal=!this.stoppedsignal; //stoppedsignal=false
           log.info(TAG + `stoppedsignal = [${this.stoppedsignal}]`)
+          await this.prepared()
           break;
         case 'released':
           log.info(TAG + 'state released called')
@@ -135,13 +136,25 @@ export class AudioDemo {
     this.avPlayer.url = fdPath;
   }
 
-  async playing(seekTo,callback) {
+  async prepared(){
     await this.avPlayer.prepare()
+  }
+
+  async playing(seekTo,callback) {
     await this.avPlayer.play()
-    if (seekTo > 0) {
-      this.avPlayer.seek(seekTo)
+    this.totalTimeMs=this.avPlayer.duration;
+    log.info(`now the totaltime is ${this.totalTimeMs}`)
+
+    if (seekTo < 0 && this.currentTimeMs > 0) {
+      log.info(TAG + `pop seekTo= ${this.currentTimeMs}`)
+      seekTo = this.currentTimeMs
     }
-    //this.setProgressTimer()
+
+    this.avPlayer.on('playing',()=>{
+      if (seekTo > 0) {
+        this.avPlayer.seek(seekTo)
+      }
+    })
   }
 
   getTotalTimeMs() {

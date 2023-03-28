@@ -5,6 +5,12 @@ import {AudioDemo,Music} from "../pm"
 import router from '@ohos.router';
 
 const TAG:string = 'Index: '
+
+class circumstance{
+    play:string='play'
+    pause:string='pause'
+}
+
 @Entry
 @Component
 struct Index {
@@ -22,6 +28,7 @@ struct Index {
 
   private currentMusic: Music = new Music()
   private av:AudioDemo=new AudioDemo()
+  private circum:circumstance=new circumstance()
 
   @Builder HeadPanel(){
     Flex({
@@ -140,9 +147,13 @@ struct Index {
     log.info(TAG + `1按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
     if(this.isPlaying==true && (this.av.stoppedsignal==false && this.av.pausedsignal==false)){
       let seekTo=-1
-      this.av.pauseing(seekTo);
+      let dowhat=this.av.pauseing(seekTo);
+      if(dowhat==this.circum[1]){
+        log.info(TAG + `show dowhat=${dowhat} and circum=${this.circum}`)
+      }
     }else{
-      this.av.playing(-1,this)
+      let dowhat=this.av.playing(-1,this)
+      log.info(TAG + `show dowhat=${dowhat} and circum=${this.circum}`)
     }
     this.isPlaying=!this.isPlaying;
     log.info(TAG + `2按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)

@@ -142,6 +142,7 @@ export class AudioDemo {
     //this.isPlaying=!this.isPlaying;
     this.totalTimeMs=this.avPlayer.duration;
     log.info(`now the totaltime is ${this.totalTimeMs}`)
+    return 'play';
   }
 
   async pauseing(seekTo){
@@ -149,6 +150,7 @@ export class AudioDemo {
     //this.isPlaying=!this.isPlaying;
     //this.avPlayer.seek(seekTo)
     log.info(`pause success, now state = [${this.avPlayer.state}]`)
+    return 'pause';
   }
 
   async seek(seekToMs){

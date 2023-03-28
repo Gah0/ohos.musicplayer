@@ -12,6 +12,7 @@ export class Music {
 export interface IPlayerEvent {
   playEvent(music: Music): void
   pauseEvent(music: Music): void
+  progressEvent(currentTimeMs: number, totalTimeMs: number):void
 }
 
 export class AudioDemo {
@@ -21,8 +22,10 @@ export class AudioDemo {
   public stoppedsignal:Boolean=false
   public pausedsignal:Boolean=false
 
+  // 进度条定时器
+  private progressIntervalID: number = 0
   private playerEvent: IPlayerEvent
-  private  currentMusic: Music = new Music()
+  private currentMusic: Music = new Music()
   private currentMusicIndex: number = 0
   // 音乐列表
   private musicList: Music[] = [
@@ -134,12 +137,36 @@ export class AudioDemo {
 
   async playing(seekTo,callback) {
     await this.avPlayer.prepare()
-    this.avPlayer.on('playing', () => {
-      if (seekTo > 0) {
-        this.avPlayer.seek(seekTo)
-      }
-    })
     await this.avPlayer.play()
+    if (seekTo > 0) {
+      this.avPlayer.seek(seekTo)
+    }
+    //this.setProgressTimer()
+  }
+
+  getTotalTimeMs() {
+    return this.totalTimeMs
+  }
+
+  cancelTimer() {
+    if (typeof (this.progressIntervalID) != 'undefined') {
+      clearInterval(this.progressIntervalID);
+      this.progressIntervalID = undefined;
+    }
+  }
+
+  setProgressTimer() {
+    this.cancelTimer()
+    log.info('asfasfasfaf')
+    this.progressIntervalID = setInterval(() => {
+      let timeMs = this.avPlayer.currentTime;
+      this.currentTimeMs = timeMs;
+      if (typeof (timeMs) === 'undefined') {
+        timeMs = 0;
+      }
+
+      this.playerEvent.progressEvent(timeMs, this.totalTimeMs)
+    }, 500)
   }
 
   async pauseing(seekTo){
@@ -152,5 +179,4 @@ export class AudioDemo {
       await this.avPlayer.seek(seekToMs);
       log.info(TAG + `已经设置进度条到[${seekToMs}]`)
   }
-
 }

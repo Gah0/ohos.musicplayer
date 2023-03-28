@@ -128,7 +128,7 @@ struct Index {
         .margin({ left: 24, right: 24 })
         .onChange((value: number, mode: SliderChangeMode) => {
           if (mode == 2) {
-            //this.onChangeMusicIndicator(value)
+            this.onChangeMusicIndicator(value)
           }
         })
     }.width('100%').height(18)
@@ -206,4 +206,38 @@ struct Index {
     this.pauseAnimation()
   }
 
+  progressEvent(currentTimeMs: number, totalTimeMs: number) {
+    this.currentTimeText = this.ms2timeText(currentTimeMs)
+    this.currentProgress = Math.floor(currentTimeMs / totalTimeMs * 100)
+    if (this.totalTimeText == '00:00') {
+      this.totalTimeText = this.ms2timeText(totalTimeMs)
+    }
+  }
+
+  onChangeMusicIndicator(value: number) {
+    this.currentProgress = value
+    if (this.totalTimeText != '00:00') {
+      let currentMS = this.currentProgress / 100 * this.av.getTotalTimeMs()
+      this.currentTimeText = this.ms2timeText(currentMS)
+      this.av.seek(currentMS)
+    } else {
+      this.currentProgress = 0
+    }
+  }
+
+  ms2timeText(ms){
+    let seconds = Math.floor(ms / 1000);
+    let sec = seconds % 60;
+    let min = (seconds - sec) / 60;
+
+    let secString = sec.toString()
+    let minString = min.toString()
+    if (sec < 10) {
+      secString = '0' + sec;
+    }
+    if (min < 10) {
+      minString = '0' + min;
+    }
+    return minString + ':' + secString;
+  }
 }

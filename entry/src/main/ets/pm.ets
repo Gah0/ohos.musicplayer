@@ -50,6 +50,7 @@ export class AudioDemo {
       this.avPlayer.reset();
       callback();
     }else{
+      await this.preinitialized()
       log.info(TAG + `createAVPlayer() success, after init now state=${this.avPlayer.state}`)
     }
   }
@@ -130,7 +131,6 @@ export class AudioDemo {
   }
 
   async playing(seekTo,callback) {
-    await this.preinitialized()
     await this.avPlayer.prepare()
     this.avPlayer.on('playing', () => {
       if (seekTo > 0) {

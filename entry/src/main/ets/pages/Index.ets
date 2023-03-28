@@ -19,8 +19,6 @@ struct Index {
   @State currentTimeText: string = '00:00'
   @State totalTimeText: string = '00:00'
 
-  @State message: string = 'Hello World'
-
   private av:AudioDemo=new AudioDemo(this)
   private currentMusic: Music = new Music()
 
@@ -99,20 +97,26 @@ struct Index {
         .width(32)
         .height(32)
         .onClick(() => {
+          this.isLike=!this.isLike
         })
+        .backgroundColor(0xd2cab3)
 
+      Divider()
       Flex({ direction: FlexDirection.Column,justifyContent: FlexAlign.Center}) {
-        Text('明日旅程').fontSize(32)
-        Text('author').fontSize(16)
-      }
+        Text('this.currentMusic.name').fontSize(24)
+        Text('this.currentMusic.author').fontSize(18)
+      }.backgroundColor(0xbbb2cb)
 
+      Divider()
       Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
         .width(32)
         .height(32)
         .onClick(() => {
+          this.isLike=!this.isLike
         })
+        .backgroundColor(0xd2cab3)
 
-    }.padding(24)
+    } .size({ width: "80%", height: 100 }).backgroundColor('#ADD8E6')
   }
 
   @Builder Indicator() {
@@ -187,8 +191,8 @@ struct Index {
         //第二层控件，圆盘+歌名+//歌曲信息，竖向歌词进度条（待做）
         Flex({direction: FlexDirection.Column}) {
           this.DiscoPanel()
-          //this.MusicShowPanel()
         }
+        this.MusicShowPanel()
         //底下面板
         Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.End }) {
           this.Indicator()

@@ -9,8 +9,14 @@ export class Music {
   url: string
 }
 
+export interface IPlayerEvent {
+  playEvent(music: Music): void
+  pauseEvent(music: Music): void
+}
+
 export class AudioDemo {
   private avPlayer
+  private playerEvent: IPlayerEvent
   public totalTimeMs: number = 0
   public currentTimeMs:number = 0
   //public isPlaying: boolean = false
@@ -35,7 +41,7 @@ export class AudioDemo {
       url: "/system/etc",
     }]
 
-  constructor(){
+  constructor(IPlayerEvent){
     this.init(this);
   }
 
@@ -142,6 +148,7 @@ export class AudioDemo {
     //this.isPlaying=!this.isPlaying;
     this.totalTimeMs=this.avPlayer.duration;
     log.info(`now the totaltime is ${this.totalTimeMs}`)
+    this.playerEvent.playEvent(this.getCurrentMusic());
     return 'play';
   }
 
@@ -150,6 +157,7 @@ export class AudioDemo {
     //this.isPlaying=!this.isPlaying;
     //this.avPlayer.seek(seekTo)
     log.info(`pause success, now state = [${this.avPlayer.state}]`)
+    this.playerEvent.pauseEvent(this.getCurrentMusic());
     return 'pause';
   }
 

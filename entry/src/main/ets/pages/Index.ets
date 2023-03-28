@@ -1,15 +1,8 @@
-import media from '@ohos.multimedia.media'
-import fs from '@ohos.file.fs'
 import log from "../log"
 import {AudioDemo,Music} from "../pm"
 import router from '@ohos.router';
 
 const TAG:string = 'Index: '
-
-class circumstance{
-    play:string='play'
-    pause:string='pause'
-}
 
 @Entry
 @Component
@@ -27,8 +20,7 @@ struct Index {
   @State totalTimeText: string = '00:00'
 
   private currentMusic: Music = new Music()
-  private av:AudioDemo=new AudioDemo()
-  private circum:circumstance=new circumstance()
+  private av:AudioDemo=new AudioDemo(this)
 
   @Builder HeadPanel(){
     Flex({
@@ -86,7 +78,6 @@ struct Index {
         .height(32)
         .onClick(() => {
         })
-
     }.padding(24)
   }
 
@@ -109,11 +100,6 @@ struct Index {
             //this.onChangeMusicIndicator(value)
         })
     }.width('100%').height(18)
-
-    Row() {
-      Text(this.currentTimeText).fontSize(12).fontColor("ff000000").width(40).margin({ left: 30 })
-      Text(this.totalTimeText).fontSize(12).fontColor("ff000000").width(40).margin({ left: 346 })
-    }.margin({ top: 8 })
   }
 
   @Builder PlayPanel() {
@@ -130,8 +116,6 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
-
-            log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
             this.PlayorPause()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
@@ -147,16 +131,10 @@ struct Index {
     log.info(TAG + `1按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
     if(this.isPlaying==true && (this.av.stoppedsignal==false && this.av.pausedsignal==false)){
       let seekTo=-1
-      let dowhat=this.av.pauseing(seekTo);
-      if(dowhat==this.circum[1]){
-        log.info(TAG + `show dowhat=${dowhat} and circum=${this.circum}`)
-      }
+      this.av.pauseing(seekTo);
     }else{
-      let dowhat=this.av.playing(-1,this)
-      log.info(TAG + `show dowhat=${dowhat} and circum=${this.circum}`)
+      this.av.playing(-1,this)
     }
-    this.isPlaying=!this.isPlaying;
-    log.info(TAG + `2按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
   }
 /*
   ProgressEvent(currentTimeMs: number, totalTimeMs: number) {
@@ -187,5 +165,15 @@ struct Index {
         }
       }
     }
+  }
+  playEvent(music: Music) {
+    this.currentMusic.name = music.name
+    this.currentMusic.author = music.author
+
+    this.isPlaying = true
+  }
+
+  pauseEvent() {
+    this.isPlaying = false
   }
 }

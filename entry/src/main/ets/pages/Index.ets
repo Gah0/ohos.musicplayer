@@ -19,7 +19,7 @@ struct Index {
 
   @State message: string = 'Hello World'
 
-  private av:AudioDemo=new AudioDemo()
+  private av:AudioDemo=new AudioDemo(this)
   private currentMusic: Music = new Music()
 
   @Builder HeadPanel(){
@@ -136,15 +136,13 @@ struct Index {
   }
 
   PlayorPause(){
-    this.isPlaying=!this.isPlaying;
-    log.info(TAG + `按了一下 => show PlayerModel.isPlaying =${this.isPlaying}`)
-    if(this.isPlaying&&this.av.stoppedsignal==false&&this.av.pausedsignal==false){
+    if(this.isPlaying==false){
       this.av.playing(-1,this)
-      this.TotalTime=this.av.totalTimeMs;
-      log.info(TAG+`${this.TotalTime}`)
+      this.playEvent(this.av.getCurrentMusic());
     }else{
       let seekTo=-1
       this.av.pauseing(seekTo);
+      this.pauseEvent();
     }
   }
 
@@ -166,4 +164,15 @@ struct Index {
       }
     }
   }
+
+  playEvent(music: Music) {
+    this.currentMusic.name = music.name
+    this.currentMusic.author = music.author
+    this.isPlaying = true
+  }
+
+  pauseEvent() {
+    this.isPlaying = false
+  }
+
 }

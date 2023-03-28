@@ -9,6 +9,11 @@ export class Music {
   url: string
 }
 
+export interface IPlayerEvent {
+  playEvent(music: Music): void
+  pauseEvent(music: Music): void
+}
+
 export class AudioDemo {
   private avPlayer
   public totalTimeMs: number = 0
@@ -16,6 +21,7 @@ export class AudioDemo {
   public stoppedsignal:Boolean=false
   public pausedsignal:Boolean=false
 
+  private playerEvent: IPlayerEvent
   private  currentMusic: Music = new Music()
   private currentMusicIndex: number = 0
   // 音乐列表
@@ -33,7 +39,7 @@ export class AudioDemo {
       url: "/system/etc",
     }]
 
-  constructor(){
+  constructor(IPlayerEvent){
     this.init(this);
   }
 
@@ -126,15 +132,10 @@ export class AudioDemo {
   async playing(seekTo,callback) {
     await this.preinitialized()
     await this.avPlayer.prepare()
-    this.avPlayer.on('prepared',()=> {
-      if (seekTo > this.avPlayer.duration) {
-        seekTo = -1
+    this.avPlayer.on('playing', () => {
+      if (seekTo > 0) {
+        this.avPlayer.seek(seekTo)
       }
-      this.avPlayer.on('playing', () => {
-        if (seekTo > 0) {
-          this.avPlayer.seek(seekTo)
-        }
-      })
     })
     await this.avPlayer.play()
     this.totalTimeMs=this.avPlayer.duration;

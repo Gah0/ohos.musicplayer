@@ -3,12 +3,35 @@ import fs from '@ohos.file.fs'
 import log from '../ets/log'
 const TAG:string = 'PM '
 
+export class Music {
+  name: string
+  author: string
+  url: string
+}
+
 export class AudioDemo {
   private avPlayer
   public totalTimeMs: number = 0
   public currentTimeMs:number = 0
   public stoppedsignal:Boolean=false
   public pausedsignal:Boolean=false
+
+  private  currentMusic: Music = new Music()
+  private currentMusicIndex: number = 0
+  // 音乐列表
+  private musicList: Music[] = [
+    {
+      name: "dynamic.wav",
+      author: "网络歌手1",
+      //      url: "file://system/etc/dynamic.wav",
+      url: "/system/etc",
+    },
+    {
+      name: "demo.wav",
+      //      url: "file://system/etc/demo.wav",
+      author: "网络歌手2",
+      url: "/system/etc",
+    }]
 
   constructor(){
     this.init(this);
@@ -86,10 +109,15 @@ export class AudioDemo {
     })
   }
 
+  getCurrentMusic() {
+    return this.musicList[this.currentMusicIndex]
+  }
+
   async preinitialized(){
     let fdPath = 'fd://'
-    let pathDir = "/system/etc"
-    let path = pathDir  + '/demo.wav'
+    let pathDir = this.getCurrentMusic().url
+    let MusicName = this.getCurrentMusic().name
+    let path = pathDir  + '/' + MusicName
     let file = await fs.open(path);
     fdPath = fdPath + '' + file.fd;
     this.avPlayer.url = fdPath;

@@ -1,8 +1,5 @@
-import media from '@ohos.multimedia.media'
-import fs from '@ohos.file.fs'
 import log from "../log"
-import {AudioDemo} from "../pm"
-import router from '@ohos.router'
+import {AudioDemo,Music} from "../pm"
 
 const TAG:string = 'Index: '
 @Entry
@@ -23,6 +20,7 @@ struct Index {
   @State message: string = 'Hello World'
 
   private av:AudioDemo=new AudioDemo()
+  private currentMusic: Music = new Music()
 
   @Builder HeadPanel(){
     Flex({
@@ -101,7 +99,7 @@ struct Index {
         .margin({ left: 24, right: 24 })
         .onChange((value: number, mode: SliderChangeMode) => {
           if (mode == 2) {
-            this.onChangeMusicIndicator(value)
+            //this.onChangeMusicIndicator(value)
           }
         })
     }.width('100%').height(18)

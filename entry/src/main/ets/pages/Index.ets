@@ -1,5 +1,6 @@
 import log from "../log"
 import {AudioDemo,Music} from "../pm"
+import router from '@ohos.router';
 
 const TAG:string = 'Index: '
 @Entry
@@ -20,7 +21,7 @@ struct Index {
   @State totalTimeText: string = '00:00'
 
   private av:AudioDemo=new AudioDemo(this)
-  private currentMusic: Music = new Music()
+  public currentMusic: Music = new Music()
 
   @Builder HeadPanel(){
     Flex({
@@ -33,7 +34,7 @@ struct Index {
         .width(48)
         .height(48)
         .onClick(() => {
-          //router.pushUrl({ url: 'pages/Firstpage'})
+          router.pushUrl({ url: 'pages/Firstpage'})
         })
       Text(this.isPlaying ? ('正在播放') : ('没有播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))

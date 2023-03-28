@@ -75,6 +75,8 @@ export class AudioDemo {
           break;
         case 'playing': // play成功调用后触发该状态机上报
           log.info(TAG + 'state playing called')
+          this.totalTimeMs=this.avPlayer.duration;
+          log.info(`now the totaltime is ${this.totalTimeMs}`)
           break;
         case 'paused': // pause成功调用后触发该状态机上报
           log.info(TAG + 'state paused called')
@@ -138,8 +140,6 @@ export class AudioDemo {
       }
     })
     await this.avPlayer.play()
-    this.totalTimeMs=this.avPlayer.duration;
-    log.info(`now the totaltime is ${this.totalTimeMs}`)
   }
 
   async pauseing(seekTo){

@@ -9,6 +9,8 @@ struct Index {
   @State isLike: boolean = false
   @State isLoop: boolean = false
 
+  private turntableTimer: number
+  @State pointerAngle: number = 0
   @State turntableAngle: number = 0
   @State currentProgress: number = 0
 
@@ -48,7 +50,7 @@ struct Index {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceEvenly}) {
       Image($r("app.media.img_turntable"))
         .objectFit(ImageFit.Contain)
-        .aspectRatio(1.36)
+        .aspectRatio(1.56)
         .rotate({
           x: 0,
           y: 0,
@@ -57,7 +59,38 @@ struct Index {
           centerY: '50%',
           angle: this.turntableAngle
         })
-    }.backgroundColor(0xAFEEEE)
+    }
+  }
+
+  playAnimation() {
+    if (this.turntableTimer) {
+      return
+    }
+    let fun = () => {
+      animateTo({ duration: 1500, curve: Curve.Linear, playMode: PlayMode.Normal },
+        () => {
+          this.turntableAngle = this.turntableAngle + 90;
+        })
+    }
+    fun()
+    this.turntableTimer = setInterval(fun, 1600)
+
+    animateTo({ duration: 1500, curve: Curve.Linear, playMode: PlayMode.Normal },
+      () => {
+        this.pointerAngle = 39;
+      })
+  }
+
+  pauseAnimation() {
+    if (this.turntableTimer) {
+      clearInterval(this.turntableTimer)
+      this.turntableTimer = undefined
+    }
+
+    animateTo({ duration: 1500, curve: Curve.Linear, playMode: PlayMode.Normal },
+      () => {
+        this.pointerAngle = 0;
+      })
   }
 
   @Builder MusicShowPanel(){
@@ -148,7 +181,7 @@ struct Index {
 
   build() {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceBetween }) {
-      Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.Start }) {
+      Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Start }) {
         //第一行控件，返回，文字，分布式
         this.HeadPanel()
         //第二层控件，圆盘+歌名+//歌曲信息，竖向歌词进度条（待做）
@@ -169,10 +202,12 @@ struct Index {
     this.currentMusic.name = music.name
     this.currentMusic.author = music.author
     this.isPlaying = true
+    this.playAnimation()
   }
 
   pauseEvent() {
     this.isPlaying = false
+    this.pauseAnimation()
   }
 
 }

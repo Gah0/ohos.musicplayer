@@ -93,7 +93,13 @@ struct Index {
   }
 
   @Builder MusicShowPanel(){
-    Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Center }) {
+    Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceAround, alignItems: ItemAlign.Auto }) {
+
+      Column(){
+        Text('this.currentMusic.name').width('100%').fontSize(24).border({width:1})
+        Text('this.currentMusic.author').width('100%').fontSize(18).border({width:1})
+      }.justifyContent(FlexAlign.Start)
+
       Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
         .width(32)
         .height(32)
@@ -101,23 +107,8 @@ struct Index {
           this.isLike=!this.isLike
         })
         .backgroundColor(0xd2cab3)
-
-      Divider()
-      Flex({ direction: FlexDirection.Column,justifyContent: FlexAlign.Center}) {
-        Text('this.currentMusic.name').fontSize(24)
-        Text('this.currentMusic.author').fontSize(18)
-      }.backgroundColor(0xbbb2cb)
-
-      Divider()
-      Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
-        .width(32)
-        .height(32)
-        .onClick(() => {
-          this.isLike=!this.isLike
-        })
-        .backgroundColor(0xd2cab3)
-
-    } .size({ width: "80%", height: 100 }).backgroundColor('#ADD8E6')
+        .offset({ x: 64 })
+    }.width(360).height(72).position({ x:24 ,y: 480 }).border({ width: 1, style: BorderStyle.Dashed })
   }
 
   @Builder Indicator() {
@@ -144,7 +135,7 @@ struct Index {
 
     Row() {
       Text(this.currentTimeText).fontSize(12).fontColor("ff000000").width(40).margin({ left: 30 })
-      Text(this.totalTimeText).fontSize(12).fontColor("ff000000").width(40).margin({ left: 346 })
+      Text(this.totalTimeText).fontSize(12).fontColor("ff000000").width(40).margin({ left: 344 })
     }.margin({ top: 8 })
   }
 

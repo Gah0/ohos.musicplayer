@@ -155,20 +155,6 @@ export class AudioDemo {
     }
   }
 
-  setProgressTimer() {
-    this.cancelTimer()
-    log.info('asfasfasfaf')
-    this.progressIntervalID = setInterval(() => {
-      let timeMs = this.avPlayer.currentTime;
-      this.currentTimeMs = timeMs;
-      if (typeof (timeMs) === 'undefined') {
-        timeMs = 0;
-      }
-
-      this.playerEvent.progressEvent(timeMs, this.totalTimeMs)
-    }, 500)
-  }
-
   async pauseing(seekTo){
     await this.avPlayer.pause();
     this.avPlayer.seek(seekTo)

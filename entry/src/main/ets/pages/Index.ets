@@ -161,6 +161,19 @@ struct Index {
         //底下面板
         Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.End }) {
           this.Indicator()
+          Row() {
+            Text(this.currentTimeText)
+              .visibility(Visibility.Visible)
+              .fontSize(12)
+              .fontColor("ff000000")
+              .width(40)
+              .margin({ left: 30 })
+            Text(this.totalTimeText)
+              .fontSize(12)
+              .fontColor("ff000000")
+              .width(40)
+              .margin({ left: 350 })
+          }.margin({ top: 8 })
           this.PlayPanel()
         }
       }

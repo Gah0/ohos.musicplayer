@@ -1,29 +1,29 @@
 import log from "../log"
 import {AudioDemo,Music} from "../pm"
 import router from '@ohos.router';
+import media from '@ohos.multimedia.media';
 
 const TAG:string = 'Index: '
 @Entry
 @Component
 struct Index {
-  @State isPlaying: boolean = false
+  @State isPlaying:boolean=false
   @State isLike: boolean = false
   @State isLoop: boolean = false
-
   private turntableTimer: number
+  public progressIntervalID
   @State pointerAngle: number = 0
   @State turntableAngle: number = 0
   @State currentProgress: number = 0
-
   @State currTime: number = 0
   @State TotalTime: number = 0
   @State currentTimeText: string = '00:00'
   @State totalTimeText: string = '00:00'
-
-  private av:AudioDemo=new AudioDemo(this)
+  private av: AudioDemo = new AudioDemo(this)
+  private avplayer: media.AVPlayer
   public currentMusic: Music = new Music()
 
-  @Builder HeadPanel(){
+  @Builder HeadPanel() {
     Flex({
       direction: FlexDirection.Row,
       wrap: FlexWrap.NoWrap,
@@ -34,19 +34,17 @@ struct Index {
         .width(48)
         .height(48)
         .onClick(() => {
-          router.pushUrl({ url: 'pages/Firstpage'})
+          router.pushUrl({ url: 'pages/Firstpage' })
         })
       Text(this.isPlaying ? ('正在播放') : ('没有播放')).fontSize(25).height(150).flexShrink(2).flexBasis('auto')
       Image($r("app.media.distribute"))
         .width(38)
         .height(38)
-        .onClick(() => {
-        })
-    }.padding(16).margin({top: 16, bottom: 16})
+    }.padding(16).margin({ top: 16, bottom: 16 })
   }
 
-  @Builder DiscoPanel(){
-    Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceEvenly}) {
+  @Builder DiscoPanel() {
+    Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.SpaceEvenly }) {
       Image($r("app.media.img_turntable"))
         .objectFit(ImageFit.Contain)
         .aspectRatio(1.56)
@@ -92,23 +90,23 @@ struct Index {
       })
   }
 
-  @Builder MusicShowPanel(){
+  @Builder MusicShowPanel() {
     Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceAround, alignItems: ItemAlign.Auto }) {
 
-      Column(){
-        Text('this.currentMusic.name').width('100%').fontSize(24).border({width:1})
-        Text('this.currentMusic.author').width('100%').fontSize(18).border({width:1})
+      Column() {
+        Text('this.currentMusic.name').width('100%').fontSize(24).border({ width: 1 })
+        Text('this.currentMusic.author').width('100%').fontSize(18).border({ width: 1 })
       }.justifyContent(FlexAlign.Start)
 
       Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
         .width(32)
         .height(32)
         .onClick(() => {
-          this.isLike=!this.isLike
+          this.isLike = !this.isLike
         })
         .backgroundColor(0xd2cab3)
         .offset({ x: 64 })
-    }.width(360).height(72).position({ x:24 ,y: 480 }).border({ width: 1, style: BorderStyle.Dashed })
+    }.width(360).height(72).position({ x: 24, y: 480 }).border({ width: 1, style: BorderStyle.Dashed })
   }
 
   @Builder Indicator() {
@@ -128,7 +126,7 @@ struct Index {
         .margin({ left: 24, right: 24 })
         .onChange((value: number, mode: SliderChangeMode) => {
           if (mode == 2) {
-            this.onChangeMusicIndicator(value)
+            //this.onChangeMusicIndicator(value)
           }
         })
     }.width('100%').height(18)
@@ -144,7 +142,7 @@ struct Index {
       Image(this.isLoop ? $r("app.media.icon_music_sequence") : $r("app.media.icon_music_mode1"))
         .width(22).height(22)
         .onClick(() => {
-            this.isLoop =! this.isLoop;
+          this.isLoop = !this.isLoop;
         })
       Image($r("app.media.privious")).width(48).height(48).onClick(() => {
         //this.onPreviousMusic()
@@ -153,7 +151,7 @@ struct Index {
         .width(72)
         .height(72)
         .onClick(() => {
-            this.PlayorPause()
+          this.PlayorPause()
         })
       Image($r("app.media.next")).width(48).height(48).onClick(() => {
         //this.onNextMusic()
@@ -164,14 +162,28 @@ struct Index {
     }.width('100%').height(150).padding(32)
   }
 
-  PlayorPause(){
-    if(this.isPlaying==false){
-      this.av.playing(-1,this)
-      this.playEvent(this.av.getCurrentMusic());
-    }else{
-      let seekTo=-1
+  PlayorPause() {
+    if (this.isPlaying == false) {
+      this.av.prepared(0,()=>{
+        this.av.playing(-1, this);
+      });
+
+      this.isPlaying=this.av.isPlaying;
+      log.info(TAG + `av赋值给isplaying=${this.isPlaying}`)
+      /*
+      log.info(TAG + `${this.isPlaying}`)
+      this.isPlaying = !this.isPlaying;
+      log.info(TAG + `${this.isPlaying}`)*/
+      //this.playEvent(this.av.getCurrentMusic());
+    } else {
+      let seekTo = -1
       this.av.pauseing(seekTo);
-      this.pauseEvent();
+      this.isPlaying=this.av.isPlaying;
+      //this.pauseEvent(this.av.getCurrentMusic());
+      /*
+      log.info(TAG + `${this.isPlaying}`)
+      this.isPlaying = !this.isPlaying;*/
+      log.info(TAG + `av赋值给isplaying=${this.isPlaying}`)
     }
   }
 
@@ -181,9 +193,10 @@ struct Index {
         //第一行控件，返回，文字，分布式
         this.HeadPanel()
         //第二层控件，圆盘+歌名+//歌曲信息，竖向歌词进度条（待做）
-        Flex({direction: FlexDirection.Column}) {
+        Flex({ direction: FlexDirection.Column }) {
           this.DiscoPanel()
         }
+
         this.MusicShowPanel()
         //底下面板
         Flex({ direction: FlexDirection.Column, justifyContent: FlexAlign.End }) {
@@ -201,19 +214,12 @@ struct Index {
     this.playAnimation()
   }
 
-  pauseEvent() {
+  pauseEvent(music: Music) {
     this.isPlaying = false
     this.pauseAnimation()
   }
-
-  progressEvent(currentTimeMs: number, totalTimeMs: number) {
-    this.currentTimeText = this.ms2timeText(currentTimeMs)
-    this.currentProgress = Math.floor(currentTimeMs / totalTimeMs * 100)
-    if (this.totalTimeText == '00:00') {
-      this.totalTimeText = this.ms2timeText(totalTimeMs)
-    }
-  }
-
+}
+/*
   onChangeMusicIndicator(value: number) {
     this.currentProgress = value
     if (this.totalTimeText != '00:00') {
@@ -241,3 +247,4 @@ struct Index {
     return minString + ':' + secString;
   }
 }
+*/

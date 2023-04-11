@@ -94,8 +94,8 @@ struct Index {
     Flex({ direction: FlexDirection.Row, justifyContent: FlexAlign.SpaceAround, alignItems: ItemAlign.Auto }) {
 
       Column() {
-        Text('this.currentMusic.name').width('100%').fontSize(24).border({ width: 1 })
-        Text('this.currentMusic.author').width('100%').fontSize(18).border({ width: 1 })
+        Text(this.currentMusic.name).width('100%').fontSize(24).border({ width: 1 })
+        Text(this.currentMusic.author).width('100%').fontSize(18).border({ width: 1 })
       }.justifyContent(FlexAlign.Start)
 
       Image(this.isLike ? $r("app.media.addlike") : $r("app.media.unlike"))
@@ -207,6 +207,13 @@ struct Index {
     }
   }
 
+  aboutToAppear():void{
+    let music = this.av.getCurrentMusic()
+    this.currentMusic.name = music.name
+    this.currentMusic.author = music.author
+    log.info(`name=${this.currentMusic.name},author=${this.currentMusic.author}`)
+  }
+
   playEvent(music: Music) {
     this.currentMusic.name = music.name
     this.currentMusic.author = music.author
@@ -246,5 +253,5 @@ struct Index {
     }
     return minString + ':' + secString;
   }
+  */
 }
-*/

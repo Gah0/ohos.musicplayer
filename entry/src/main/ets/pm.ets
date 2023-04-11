@@ -174,7 +174,7 @@ export class AudioDemo {
   playing(seekTo,callback) {
     log.info(TAG+'play seekTo=' + seekTo);
     //this.notifyPlayingStatus(startPlay);
-    log.info(TAG+'call avPlayer.play');
+    log.info(TAG+'call avPlayer.play()');
     this.avPlayer.play();
     this.isPlaying=!this.isPlaying;
 /*

@@ -9,12 +9,6 @@ export class Music {
   url: string
 }
 
-export interface IPlayerEvent {
-  playEvent(music: Music): void
-  pauseEvent(music: Music): void
-  progressEvent(currentTimeMs: number, totalTimeMs: number):void
-}
-
 export class AudioDemo {
   private avPlayer:media.AVPlayer
   public totalTimeMs: number = 0
@@ -25,11 +19,10 @@ export class AudioDemo {
   // 是否在播放
   public isPlaying: boolean = false
   private progressIntervalID: number = 0
-  //public playerEvent: IPlayerEvent
-  private currentMusic: Music = new Music()
-  private currentMusicIndex: number = 0
+  public currentMusic: Music = new Music()
+  public currentMusicIndex: number = 0
   // 音乐列表
-  private musicList: Music[] = [
+  public musicList: Music[] = [
     {
       name: "dynamic.wav",
       author: "网络歌手1",
@@ -43,7 +36,7 @@ export class AudioDemo {
       url: "/system/etc",
     }]
 
-  constructor(IPlayerEvent){
+  constructor(){
     this.init(this);
   }
 
@@ -61,10 +54,10 @@ export class AudioDemo {
       log.info(TAG + `prepared() success, after prepared now state=${this.avPlayer.state}`)
     }
   }
-
+/*
   // 设置播放器回调函数
   // 注册avplayer回调函数
-  /*setAVPlayerCallback() {
+  setAVPlayerCallback() {
     // 状态机变化回调函数
     this.avPlayer.on('stateChange', async (state,callback) => {
       switch (state) {
@@ -123,8 +116,9 @@ export class AudioDemo {
     this.avPlayer.on('endOfStream', () => {
       log.info('endOfStream success')
     })
-  }*/
 
+  }
+*/
   getCurrentMusic() {
     return this.musicList[this.currentMusicIndex]
   }
@@ -160,6 +154,7 @@ export class AudioDemo {
       callback();
     }else if(this.avPlayer.state==='prepared'){
       log.info(TAG+`prepared, please press play`);
+      this.totalTimeMs=this.getTotalTimeMs()
       callback();
     }else{
       this.avPlayer.release();
@@ -176,6 +171,7 @@ export class AudioDemo {
     //this.notifyPlayingStatus(startPlay);
     log.info(TAG+'call avPlayer.play()');
     this.avPlayer.play();
+    this.setProgressTimer();
     this.isPlaying=!this.isPlaying;
 /*
     //暂停后再次播放
@@ -195,7 +191,7 @@ export class AudioDemo {
   }
 
   getTotalTimeMs() {
-    return this.totalTimeMs
+    return this.avPlayer.duration
   }
 
   pauseing(seekTo){
@@ -213,7 +209,6 @@ export class AudioDemo {
   }
 
   seek(seekToMs){
-    log.info(TAG+`seekTo= ${seekToMs}`)
     if(this.isPlaying){
       this.avPlayer.seek(seekToMs);
       log.info(TAG + `已经设置进度条到[${seekToMs}]`)
@@ -227,6 +222,31 @@ export class AudioDemo {
     this.avPlayer.stop();
   }
 
+  cancelProgressTimer() {
+    if (typeof (this.progressIntervalID) != 'undefined') {
+      clearInterval(this.progressIntervalID);
+      this.progressIntervalID = undefined;
+    }
+  }
+
+  setProgressTimer() {
+    this.cancelProgressTimer()
+
+    this.progressIntervalID = setInterval(() => {
+      let timeMs = this.avPlayer.currentTime;
+      this.currentTimeMs = timeMs;
+      if (typeof (timeMs) === 'undefined') {
+        timeMs = 0;
+      }
+
+      log.info(TAG+`${timeMs}, ${this.totalTimeMs}`)
+      this.avPlayer.on('endOfStream', () => {
+        log.info('endOfStream success')
+        this.cancelProgressTimer()
+        this.pauseing(-1)
+      })
+    }, 500)
+  }
 /*
   notifyPlayingStatus(isPlaying){
     this.isPlaying=isPlaying;

@@ -19,7 +19,8 @@ struct Index {
   @State TotalTime: number = 0
   @State currentTimeText: string = '00:00'
   @State totalTimeText: string = '00:00'
-  private av: AudioDemo = new AudioDemo(this)
+  public index:number=0
+  private av: AudioDemo = new AudioDemo()
   private avplayer: media.AVPlayer
   public currentMusic: Music = new Music()
 
@@ -125,9 +126,7 @@ struct Index {
         .flexGrow(1)
         .margin({ left: 24, right: 24 })
         .onChange((value: number, mode: SliderChangeMode) => {
-          if (mode == 2) {
-            //this.onChangeMusicIndicator(value)
-          }
+            this.onChangeMusicIndicator(value,mode)
         })
     }.width('100%').height(18)
 
@@ -214,20 +213,23 @@ struct Index {
     log.info(`name=${this.currentMusic.name},author=${this.currentMusic.author}`)
   }
 
-  playEvent(music: Music) {
-    this.currentMusic.name = music.name
-    this.currentMusic.author = music.author
-    this.isPlaying = true
-    this.playAnimation()
-  }
 
-  pauseEvent(music: Music) {
-    this.isPlaying = false
-    this.pauseAnimation()
+  onChangeMusicIndicator(value: number,mode:SliderChangeMode) {
+    this.currentProgress=value
+    if (isNaN(this.TotalTime)) {
+      this.currentProgress = 0
+      log.info(TAG + `setProgress ignored, totalMs= ${this.TotalTime}`)
+      return
+    }
+    let curt = this.currentProgress / 100 * this.av.getTotalTimeMs()
+    log.info(TAG+`crut=${curt},${this.av.getTotalTimeMs()}`)
+    this.currentTimeText = this.ms2timeText(curt)
+    if(mode === SliderChangeMode.End||mode===3){
+      log.info(TAG+`player seek = ${this.currentTimeText}`)
+      this.av.seek(curt)
+    }
   }
-}
-/*
-  onChangeMusicIndicator(value: number) {
+    /*
     this.currentProgress = value
     if (this.totalTimeText != '00:00') {
       let currentMS = this.currentProgress / 100 * this.av.getTotalTimeMs()
@@ -237,6 +239,7 @@ struct Index {
       this.currentProgress = 0
     }
   }
+*/
 
   ms2timeText(ms){
     let seconds = Math.floor(ms / 1000);
@@ -253,5 +256,4 @@ struct Index {
     }
     return minString + ':' + secString;
   }
-  */
 }
